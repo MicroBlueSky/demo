@@ -2,6 +2,8 @@ package cn.sun.elasticsearch.demo.model;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @Author: sunyufei
  * @Date: 2020-01-14 15:38
@@ -13,4 +15,6 @@ public class LogEntity {
     private String params;
     private String ret;
     private String exception;
+    private Date createTime;
+    private Date updateTime;
 }
