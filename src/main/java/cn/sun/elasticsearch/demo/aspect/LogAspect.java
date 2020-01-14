@@ -1,11 +1,19 @@
 package cn.sun.elasticsearch.demo.aspect;
 
 import cn.sun.elasticsearch.demo.annotation.LogAnnotation;
+import cn.sun.elasticsearch.demo.model.LogEntity;
+import cn.sun.elasticsearch.demo.service.log.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 /**
  * @Author: sunyufei
@@ -16,6 +24,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class LogAspect {
 
+    @Resource
+    private LogService logService;
     /**
     *定义切入点
     */
@@ -55,14 +65,30 @@ public class LogAspect {
     //返回通知
     @AfterReturning(pointcut = "log()&&@annotation(annotation)",returning = "result")
     public void afterReturnning(JoinPoint point, LogAnnotation annotation, Object result){
-        long time = System.currentTimeMillis();
-        log.info(time+"方法返回通知。。。。。。。。。。。。。。。。");
+        //获取请求参数
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String url = request.getRequestURL().toString();
+        String params = Arrays.toString(point.getArgs());
+        String ret = result.toString();
+        LogEntity log = new LogEntity();
+        log.setParams(params);
+        log.setRet(ret);
+        log.setUrl(url);
+        logService.saveLog(log);
     }
 
     @AfterThrowing(pointcut = "log()&&@annotation(annotation)",throwing = "e")
-    public Object afterThrowing(JoinPoint point, LogAnnotation annotation, Exception e){
+    public void afterThrowing(JoinPoint point, LogAnnotation annotation, Exception e){
         long time = System.currentTimeMillis();
         log.info(time+"方法异常通知。。。。。。。。。。。。。。");
-        return "";
+        //获取请求参数
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        LogEntity log = new LogEntity();
+        log.setParams(Arrays.toString(point.getArgs()));
+        log.setUrl(request.getRequestURL().toString());
+        log.setException(e.toString());
+        logService.saveLog(log);
     }
 }
