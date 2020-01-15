@@ -17,13 +17,13 @@ import java.util.Date;
 @Service
 public class LogServiceImpl extends BaseService implements LogService{
 
-    @Resource
-    private LogDao logDao;
+//    @Resource
+//    private LogDao logDao;
 
     @Override
     public void saveLog(LogEntity entity) {
         log.info("保存日志信息:"+entity.toString());
         entity.setCreateTime(new Date());
-        logDao.saveLog(entity);
+//        logDao.saveLog(entity);
     }
 }

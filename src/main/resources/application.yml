@@ -4,16 +4,15 @@ server:
     context-path: /demo
 
 spring:
+  profiles:
+    active: dev #开发环境
+#    active: prod #生产环境
   application:
     name: es
-#===========开启切面===========
+  #===========开启切面===========
   aop:
     auto: true
     proxy-target-class: false
-
-elasticsearch:
-  host: localhost
-  port: 9200
 
 logging:
   config: classpath:logback.xml
