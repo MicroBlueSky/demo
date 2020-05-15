@@ -26,21 +26,22 @@ public class ElasticsearchServiceImpl extends BaseService implements Elasticsear
 
     @Override
     public StringBuilder Hello(String id){
-        RestHighLevelClient client = elasticSearchConfig.client();
-        MainResponse response = null;
-        try {
-            log.info("连接es,获取es服务信息。。。。");
-            response = client.info(RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            RestHighLevelClient client = elasticSearchConfig.client();
+            MainResponse response = null;
+            try {
+                log.info("连接es,获取es服务信息。。。。");
+                response = client.info(RequestOptions.DEFAULT);
+            } catch (IOException e) {
+                log.error("捕获异常信息：{}",e.toString());
+                e.printStackTrace();
+            }
         //返回集群的各种信息
         StringBuilder builder = new StringBuilder();
-        builder.append("ClusterName:"+response.getClusterName());
-        builder.append("===== clusterUuid:"+response.getClusterUuid());
-        builder.append("===== nodeName:"+response.getNodeName());
-        builder.append("===== version:"+response.getVersion());
-        builder.append("===== build:"+response.getBuild());
+        builder.append("ClusterName:" + response.getClusterName());
+        builder.append("===== clusterUuid:" + response.getClusterUuid());
+        builder.append("===== nodeName:" + response.getNodeName());
+        builder.append("===== version:" + response.getVersion());
+        builder.append("===== build:" + response.getBuild());
         return builder;
     }
 }
